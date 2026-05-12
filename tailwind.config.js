@@ -3,25 +3,21 @@ export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
-      fontFamily: {
-        display: ['Syne', 'sans-serif'],
-        body: ['DM Sans', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
       colors: {
-        bg: '#080c14',
-        surface: '#0e1521',
-        border: '#1a2438',
-        accent: '#00d4ff',
-        warn: '#ff6b35',
-        danger: '#ff2d55',
-        success: '#00e5a0',
-        muted: '#4a5878',
+        bg:      '#00152e',
+        surface: '#001840',
+        'surface-2': '#00245c',
+        border:  '#00306b',
+        accent:  '#00a0dc',
+        warn:    '#ffaa00',
+        danger:  '#ff3d5a',
+        success: '#00d68f',
+        muted:   '#3d6080',
         text: {
-          primary: '#e8edf8',
-          secondary: '#8899bb',
-          dim: '#4a5878',
-        }
+          primary:   '#e8f0fb',
+          secondary: '#8fafd4',
+          dim:       '#3d6080',
+        },
       },
     },
   },

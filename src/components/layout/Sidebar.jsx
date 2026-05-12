@@ -3,47 +3,53 @@ import { LayoutDashboard, Upload, GitBranch, Plane, Search, ShieldAlert, Chevron
 import { isConnected } from '../../lib/supabase';
 
 const NAV = [
-  { to: '/',            icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/fleet',       icon: Plane,           label: 'Fleet View' },
-  { to: '/repository',  icon: Package,         label: 'SBOM Repository' },
-  { to: '/tree',        icon: GitBranch,       label: 'Dependency Graph' },
-  { to: '/query',       icon: Search,          label: 'Vulnerability Intel' },
-  { to: '/suppliers',   icon: Users,           label: 'Supplier Compliance' },
-  { to: '/incidents',   icon: AlertOctagon,    label: 'Incident Investigation' },
-  { to: '/reports',     icon: FileText,        label: 'Reports' },
+  { to: '/',           icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/fleet',      icon: Plane,           label: 'Fleet View' },
+  { to: '/repository', icon: Package,         label: 'SBOM Repository' },
+  { to: '/tree',       icon: GitBranch,       label: 'Dependency Graph' },
+  { to: '/query',      icon: Search,          label: 'Vulnerability Intel' },
+  { to: '/suppliers',  icon: Users,           label: 'Supplier Compliance' },
+  { to: '/incidents',  icon: AlertOctagon,    label: 'Incident Investigation' },
+  { to: '/reports',    icon: FileText,        label: 'Reports' },
 ];
 
 export default function Sidebar() {
   return (
-    <aside className="w-52 shrink-0 flex flex-col border-r border-border bg-surface h-screen sticky top-0">
+    <aside style={{ width: 210, background: '#001840', borderRight: '1px solid #00306b', display: 'flex', flexDirection: 'column', height: '100vh', flexShrink: 0 }}>
       {/* Logo */}
-      <div className="px-4 py-4 border-b border-border">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center">
-            <ShieldAlert size={13} className="text-accent" />
+      <div style={{ padding: '16px', borderBottom: '1px solid #00306b' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(0,160,220,0.12)', border: '1px solid rgba(0,160,220,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ShieldAlert size={15} color="#00a0dc" />
           </div>
           <div>
-            <div style={{fontFamily:'Syne,sans-serif'}} className="font-bold text-sm text-text-primary tracking-tight">SkyTrace</div>
-            <div className="text-[10px] text-muted font-mono">Airbus FYI 2026</div>
+            <div style={{ fontWeight: 800, fontSize: 15, color: '#e8f0fb', letterSpacing: '-0.01em' }}>SkyTrace</div>
+            <div style={{ fontSize: 9, color: '#3d6080', fontFamily: 'JetBrains Mono, monospace', marginTop: 1 }}>AIRBUS FYI 2026</div>
           </div>
         </div>
       </div>
 
+      {/* Airbus brand bar */}
+      <div style={{ height: 3, background: 'linear-gradient(90deg, #00205b, #00a0dc, #ffffff22)' }} />
+
       {/* Nav */}
-      <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
+      <nav style={{ flex: 1, padding: '10px 8px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {NAV.map(({ to, icon: Icon, label }) => (
           <NavLink key={to} to={to} end={to === '/'}
-            className={({ isActive }) =>
-              `flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-all group ${
-                isActive ? 'bg-accent/10 text-accent border border-accent/20' : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
-              }`
-            }
+            style={({ isActive }) => ({
+              display: 'flex', alignItems: 'center', gap: 10,
+              padding: '9px 12px', borderRadius: 8, textDecoration: 'none',
+              fontSize: 13, transition: 'all 0.15s',
+              background: isActive ? 'rgba(0,160,220,0.12)' : 'transparent',
+              color: isActive ? '#00a0dc' : '#8fafd4',
+              border: isActive ? '1px solid rgba(0,160,220,0.25)' : '1px solid transparent',
+            })}
           >
             {({ isActive }) => (
               <>
-                <Icon size={14} className={isActive ? 'text-accent' : 'text-muted group-hover:text-text-secondary'} />
-                <span className="flex-1 text-sm">{label}</span>
-                {isActive && <ChevronRight size={11} className="text-accent/50" />}
+                <Icon size={14} color={isActive ? '#00a0dc' : '#3d6080'} style={{ flexShrink: 0 }} />
+                <span style={{ flex: 1 }}>{label}</span>
+                {isActive && <ChevronRight size={11} color="rgba(0,160,220,0.5)" />}
               </>
             )}
           </NavLink>
@@ -51,10 +57,13 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-3 border-t border-border">
-        <div className="flex items-center gap-2 text-[10px] font-mono">
-          <span className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-success' : 'bg-warn'}`} />
-          <span className="text-muted">{isConnected ? 'Supabase live' : 'Mock data'}</span>
+      <div style={{ padding: '12px 16px', borderTop: '1px solid #00306b' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, fontFamily: 'JetBrains Mono, monospace', color: '#3d6080' }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: isConnected ? '#00d68f' : '#ffaa00', flexShrink: 0 }} />
+          {isConnected ? 'Supabase live' : 'Mock data mode'}
+        </div>
+        <div style={{ fontSize: 9, color: '#3d6080', fontFamily: 'JetBrains Mono, monospace', marginTop: 4, opacity: 0.6 }}>
+          Round 2 Prototype · May 2026
         </div>
       </div>
     </aside>
