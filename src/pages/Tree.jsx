@@ -57,22 +57,22 @@ const TREE_SBOMS = [
 ];
 
 const TYPE_COLORS = {
-  firmware: { border: '#00a0dc', text: '#00a0dc', label: 'FIRMWARE' },
-  library:  { border: '#8fafd4', text: '#8fafd4', label: 'LIBRARY'  },
-  rtos:     { border: '#00d68f', text: '#00d68f', label: 'RTOS'     },
-  driver:   { border: '#ffaa00', text: '#ffaa00', label: 'DRIVER'   },
+  firmware: { border: '#0077c8', text: '#0077c8', label: 'FIRMWARE' },
+  library:  { border: '#6b7c8a', text: '#6b7c8a', label: 'LIBRARY'  },
+  rtos:     { border: '#009f4d', text: '#009f4d', label: 'RTOS'     },
+  driver:   { border: '#fe5000', text: '#fe5000', label: 'DRIVER'   },
   data:     { border: '#a78bfa', text: '#a78bfa', label: 'DATA'     },
 };
-const VULN_COLORS = { critical: '#ff3d5a', high: '#ffaa00', medium: '#ffd060' };
+const VULN_COLORS = { critical: '#e4002b', high: '#fe5000', medium: '#ffd060' };
 
 function ComponentNode({ data, selected }) {
   const t = TYPE_COLORS[data.type] || TYPE_COLORS.library;
   const vulnColor = data.vuln ? VULN_COLORS[data.vuln] : null;
-  const borderColor = selected ? '#00a0dc' : vulnColor ? vulnColor : t.border;
+  const borderColor = selected ? '#0077c8' : vulnColor ? vulnColor : t.border;
 
   return (
     <div style={{
-      background: vulnColor ? `rgba(${vulnColor === '#ff3d5a' ? '255,61,90' : '255,170,0'},0.08)` : 'rgba(0,36,92,0.95)',
+      background: vulnColor ? `rgba(${vulnColor === '#e4002b' ? '255,61,90' : '255,170,0'},0.08)` : 'rgba(0,36,92,0.95)',
       border: `1.5px solid ${borderColor}`,
       boxShadow: selected
         ? '0 0 0 2px rgba(0,160,220,0.4), 0 8px 24px rgba(0,0,0,0.5)'
@@ -88,10 +88,10 @@ function ComponentNode({ data, selected }) {
       <div style={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', color: vulnColor || t.text, letterSpacing: '0.1em', marginBottom: 5 }}>
         {data.vuln ? `⚠ ${t.label}` : t.label}
       </div>
-      <div style={{ fontSize: 13, fontWeight: 700, color: '#e8f0fb', marginBottom: 3 }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: '#1a2332', marginBottom: 3 }}>
         {data.name}
       </div>
-      <div style={{ fontSize: 10, color: '#3d6080', fontFamily: 'JetBrains Mono, monospace' }}>
+      <div style={{ fontSize: 10, color: '#b0bec8', fontFamily: 'JetBrains Mono, monospace' }}>
         v{data.version}
       </div>
       {data.vuln && (
@@ -105,7 +105,7 @@ function ComponentNode({ data, selected }) {
         </div>
       )}
       {data.license && (
-        <div style={{ marginTop: 4, fontSize: 9, color: '#3d6080', fontFamily: 'JetBrains Mono, monospace' }}>
+        <div style={{ marginTop: 4, fontSize: 9, color: '#b0bec8', fontFamily: 'JetBrains Mono, monospace' }}>
           {data.license}
         </div>
       )}
@@ -165,8 +165,8 @@ function buildGraph(sbom) {
     source: d.from,
     target: d.to,
     type: 'smoothstep',
-    style: { stroke: '#00306b', strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#00306b', width: 14, height: 14 },
+    style: { stroke: '#e8ecf0', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#e8ecf0', width: 14, height: 14 },
   }));
 
   return { nodes, edges };
@@ -195,29 +195,29 @@ export default function TreePage() {
   const vulnCount = sbom?.components.filter(c => c.vuln).length || 0;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', background: '#00152e' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', background: '#f4f6f9' }}>
 
       {/* Top bar */}
-      <div style={{ background: '#001840', borderBottom: '1px solid #00306b', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
-        <GitBranch size={15} color="#00a0dc" />
-        <span style={{ fontWeight: 700, fontSize: 14, color: '#e8f0fb' }}>Dependency Graph</span>
+      <div style={{ background: '#ffffff', borderBottom: '1px solid #e8ecf0', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
+        <GitBranch size={15} color="#0077c8" />
+        <span style={{ fontWeight: 700, fontSize: 14, color: '#1a2332' }}>Dependency Graph</span>
 
         <select
           value={selectedId}
           onChange={e => setSelectedId(e.target.value)}
-          style={{ background: '#00205b', border: '1px solid #00306b', borderRadius: 6, padding: '5px 10px', fontSize: 12, color: '#e8f0fb', outline: 'none', marginLeft: 8 }}
+          style={{ background: '#f0f5fb', border: '1px solid #e8ecf0', borderRadius: 6, padding: '5px 10px', fontSize: 12, color: '#1a2332', outline: 'none', marginLeft: 8 }}
         >
           {TREE_SBOMS.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
 
-        <div style={{ display: 'flex', gap: 16, fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: '#8fafd4', marginLeft: 8 }}>
-          <span>Subsystem: <span style={{ color: '#00a0dc' }}>{sbom?.subsystem}</span></span>
-          <span>Supplier: <span style={{ color: '#e8f0fb' }}>{sbom?.supplier}</span></span>
+        <div style={{ display: 'flex', gap: 16, fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: '#6b7c8a', marginLeft: 8 }}>
+          <span>Subsystem: <span style={{ color: '#0077c8' }}>{sbom?.subsystem}</span></span>
+          <span>Supplier: <span style={{ color: '#1a2332' }}>{sbom?.supplier}</span></span>
           <span>{sbom?.components.length} components · {sbom?.dependencies.length} edges</span>
         </div>
 
         {vulnCount > 0 && (
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#ffaa00', background: 'rgba(255,170,0,0.1)', border: '1px solid rgba(255,170,0,0.25)', borderRadius: 8, padding: '5px 12px' }}>
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#fe5000', background: 'rgba(255,170,0,0.1)', border: '1px solid rgba(255,170,0,0.25)', borderRadius: 8, padding: '5px 12px' }}>
             <AlertTriangle size={12} />
             {vulnCount} vulnerable component{vulnCount > 1 ? 's' : ''}
           </div>
@@ -225,18 +225,18 @@ export default function TreePage() {
       </div>
 
       {/* Legend */}
-      <div style={{ background: '#001230', borderBottom: '1px solid #00306b', padding: '6px 20px', display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0, flexWrap: 'wrap' }}>
+      <div style={{ background: '#f8fafc', borderBottom: '1px solid #e8ecf0', padding: '6px 20px', display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0, flexWrap: 'wrap' }}>
         {Object.entries(TYPE_COLORS).map(([type, c]) => (
           <span key={type} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, fontFamily: 'JetBrains Mono, monospace', color: c.text }}>
             <span style={{ width: 10, height: 10, borderRadius: 3, border: `1.5px solid ${c.border}`, background: `${c.border}18`, display: 'inline-block' }} />
             {c.label}
           </span>
         ))}
-        <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, fontFamily: 'JetBrains Mono, monospace', color: '#ff3d5a', marginLeft: 8 }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, fontFamily: 'JetBrains Mono, monospace', color: '#e4002b', marginLeft: 8 }}>
           <span style={{ width: 10, height: 10, borderRadius: 3, border: '1.5px solid #ff3d5a', background: 'rgba(255,61,90,0.15)', display: 'inline-block' }} />
           VULNERABLE
         </span>
-        <span style={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', color: '#3d6080', marginLeft: 'auto' }}>
+        <span style={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', color: '#b0bec8', marginLeft: 'auto' }}>
           Click a node to inspect · Scroll to zoom · Drag to pan
         </span>
       </div>
@@ -261,8 +261,8 @@ export default function TreePage() {
             <Background color="#00306b" gap={28} size={1} variant="dots" />
             <Controls showInteractive={false} />
             <MiniMap
-              nodeColor={n => n.data?.vuln ? VULN_COLORS[n.data.vuln] : TYPE_COLORS[n.data?.type]?.border || '#8fafd4'}
-              maskColor="rgba(0,21,46,0.75)"
+              nodeColor={n => n.data?.vuln ? VULN_COLORS[n.data.vuln] : TYPE_COLORS[n.data?.type]?.border || '#6b7c8a'}
+              maskColor="rgba(244,246,249,0.85)"
               width={150} height={90}
             />
           </ReactFlow>
@@ -270,10 +270,10 @@ export default function TreePage() {
 
         {/* Node detail panel */}
         {selectedNode && (
-          <div style={{ width: 280, borderLeft: '1px solid #00306b', background: '#001840', overflow: 'auto', flexShrink: 0 }} className="fade-up">
-            <div style={{ padding: '14px 16px', borderBottom: '1px solid #00306b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 700, fontSize: 13, color: '#e8f0fb' }}>Component Detail</span>
-              <button onClick={() => setSelectedNode(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#8fafd4', fontSize: 18, lineHeight: 1 }}>×</button>
+          <div style={{ width: 280, borderLeft: '1px solid #e8ecf0', background: '#ffffff', overflow: 'auto', flexShrink: 0 }} className="fade-up">
+            <div style={{ padding: '14px 16px', borderBottom: '1px solid #e8ecf0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 700, fontSize: 13, color: '#1a2332' }}>Component Detail</span>
+              <button onClick={() => setSelectedNode(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7c8a', fontSize: 18, lineHeight: 1 }}>×</button>
             </div>
             <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 16 }}>
               {(() => {
@@ -287,26 +287,26 @@ export default function TreePage() {
                   <>
                     <div>
                       <div style={{ fontSize: 9, fontFamily: 'JetBrains Mono', color: t.text, letterSpacing: '0.1em', marginBottom: 6 }}>{t.label}</div>
-                      <div style={{ fontSize: 18, fontWeight: 700, color: '#e8f0fb' }}>{d.name}</div>
-                      <div style={{ fontSize: 11, color: '#3d6080', fontFamily: 'JetBrains Mono', marginTop: 3 }}>v{d.version}</div>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: '#1a2332' }}>{d.name}</div>
+                      <div style={{ fontSize: 11, color: '#b0bec8', fontFamily: 'JetBrains Mono', marginTop: 3 }}>v{d.version}</div>
                     </div>
 
                     {[['License', d.license], ['Type', d.type]].map(([k, v]) => (
-                      <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, paddingBottom: 8, borderBottom: '1px solid #00306b' }}>
-                        <span style={{ color: '#3d6080', fontFamily: 'JetBrains Mono' }}>{k}</span>
-                        <span style={{ color: '#8fafd4', fontFamily: 'JetBrains Mono' }}>{v || '—'}</span>
+                      <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, paddingBottom: 8, borderBottom: '1px solid #e8ecf0' }}>
+                        <span style={{ color: '#b0bec8', fontFamily: 'JetBrains Mono' }}>{k}</span>
+                        <span style={{ color: '#6b7c8a', fontFamily: 'JetBrains Mono' }}>{v || '—'}</span>
                       </div>
                     ))}
 
                     <div>
-                      <div style={{ fontSize: 10, fontFamily: 'JetBrains Mono', color: '#3d6080', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>Depends On</div>
+                      <div style={{ fontSize: 10, fontFamily: 'JetBrains Mono', color: '#b0bec8', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>Depends On</div>
                       {depsOut.length === 0
-                        ? <div style={{ fontSize: 11, color: '#3d6080', fontFamily: 'JetBrains Mono' }}>No outgoing deps</div>
+                        ? <div style={{ fontSize: 11, color: '#b0bec8', fontFamily: 'JetBrains Mono' }}>No outgoing deps</div>
                         : depsOut.map(dep => {
                           const target = sbomData?.components.find(c => c.id === dep.to);
                           return target ? (
-                            <div key={dep.to} style={{ fontSize: 11, fontFamily: 'JetBrains Mono', padding: '6px 10px', background: '#00205b', border: '1px solid #00306b', borderRadius: 6, marginBottom: 4, color: '#8fafd4' }}>
-                              {target.name} <span style={{ color: '#3d6080' }}>v{target.version}</span>
+                            <div key={dep.to} style={{ fontSize: 11, fontFamily: 'JetBrains Mono', padding: '6px 10px', background: '#f0f5fb', border: '1px solid #e8ecf0', borderRadius: 6, marginBottom: 4, color: '#6b7c8a' }}>
+                              {target.name} <span style={{ color: '#b0bec8' }}>v{target.version}</span>
                             </div>
                           ) : null;
                         })
@@ -314,14 +314,14 @@ export default function TreePage() {
                     </div>
 
                     <div>
-                      <div style={{ fontSize: 10, fontFamily: 'JetBrains Mono', color: '#3d6080', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>Required By</div>
+                      <div style={{ fontSize: 10, fontFamily: 'JetBrains Mono', color: '#b0bec8', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>Required By</div>
                       {depsIn.length === 0
-                        ? <div style={{ fontSize: 11, color: '#3d6080', fontFamily: 'JetBrains Mono' }}>Root component</div>
+                        ? <div style={{ fontSize: 11, color: '#b0bec8', fontFamily: 'JetBrains Mono' }}>Root component</div>
                         : depsIn.map(dep => {
                           const src = sbomData?.components.find(c => c.id === dep.from);
                           return src ? (
-                            <div key={dep.from} style={{ fontSize: 11, fontFamily: 'JetBrains Mono', padding: '6px 10px', background: '#00205b', border: '1px solid #00306b', borderRadius: 6, marginBottom: 4, color: '#8fafd4' }}>
-                              {src.name} <span style={{ color: '#3d6080' }}>v{src.version}</span>
+                            <div key={dep.from} style={{ fontSize: 11, fontFamily: 'JetBrains Mono', padding: '6px 10px', background: '#f0f5fb', border: '1px solid #e8ecf0', borderRadius: 6, marginBottom: 4, color: '#6b7c8a' }}>
+                              {src.name} <span style={{ color: '#b0bec8' }}>v{src.version}</span>
                             </div>
                           ) : null;
                         })
@@ -333,14 +333,14 @@ export default function TreePage() {
                         <div style={{ fontSize: 10, fontFamily: 'JetBrains Mono', color: VULN_COLORS[d.vuln], marginBottom: 4, display: 'flex', alignItems: 'center', gap: 5 }}>
                           <AlertTriangle size={10} /> VULNERABILITY DETECTED
                         </div>
-                        <div style={{ fontSize: 11, color: '#8fafd4' }}>
+                        <div style={{ fontSize: 11, color: '#6b7c8a' }}>
                           This component version has known {d.vuln}-severity CVEs. Patch recommended.
                         </div>
                       </div>
                     ) : (
                       <div style={{ background: 'rgba(0,214,143,0.08)', border: '1px solid rgba(0,214,143,0.25)', borderRadius: 8, padding: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
                         <Info size={12} color="#00d68f" />
-                        <span style={{ fontSize: 11, color: '#00d68f' }}>No known vulnerabilities</span>
+                        <span style={{ fontSize: 11, color: '#009f4d' }}>No known vulnerabilities</span>
                       </div>
                     )}
                   </>

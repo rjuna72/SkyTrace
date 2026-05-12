@@ -1,110 +1,165 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Inter+Tight:wght@600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── Airbus brand colours ─────────────────────────────────────────────────── */
+/* ── Official Airbus Brand Colours ───────────────────────────────────────────
+   Source: brand.airbus.com
+   Primary:   #00205B (Airbus Blue / Prussian Blue)
+   Cyan:      #0077C8 (Lochmara) / #4298B5 / #74D2E7
+   White:     #FFFFFF
+   ──────────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --airbus-blue:      #00205b;
-  --airbus-blue-mid:  #003189;
-  --airbus-blue-light:#0053b3;
-  --airbus-cyan:      #00a0dc;
-  --airbus-white:     #ffffff;
-  --surface:          #001840;
-  --surface-2:        #00245c;
-  --border:           #00306b;
-  --text-primary:     #e8f0fb;
-  --text-secondary:   #8fafd4;
-  --text-dim:         #3d6080;
-  --success:          #00d68f;
-  --warn:             #ffaa00;
-  --danger:           #ff3d5a;
-  --accent:           #00a0dc;
+  --ab:        #00205b;   /* Airbus Blue — primary */
+  --ab-dark:   #001640;   /* darker navy — sidebar, footer */
+  --ab-mid:    #00306b;   /* mid navy — hover states */
+  --ab-light:  #0077c8;   /* Lochmara — links, accents */
+  --ab-cyan:   #4298b5;   /* lighter cyan — secondary accent */
+  --ab-sky:    #74d2e7;   /* sky blue — highlights */
+  --ab-white:  #ffffff;
+  --ab-offwhite: #f4f6f9; /* page backgrounds */
+  --ab-grey:   #e8ecf0;   /* borders, dividers */
+  --ab-grey-2: #b0bec8;   /* muted text */
+  --ab-grey-3: #6b7c8a;   /* secondary text */
+  --ab-text:   #1a2332;   /* body text */
+
+  --success: #009f4d;
+  --warn:    #fe5000;
+  --danger:  #e4002b;
+  --yellow:  #efdf00;
 }
 
 * { box-sizing: border-box; }
 
 body {
-  background: var(--airbus-blue);
-  color: var(--text-primary);
-  font-family: 'DM Sans', sans-serif;
+  background: var(--ab-offwhite);
+  color: var(--ab-text);
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   margin: 0;
+  font-size: 14px;
 }
 
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--airbus-blue); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--airbus-cyan); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--ab-grey); }
+::-webkit-scrollbar-thumb { background: var(--ab-cyan); border-radius: 3px; }
 
 @layer components {
+  /* Cards — white with subtle border, Airbus style */
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
+    background: #ffffff;
+    border: 1px solid var(--ab-grey);
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,32,91,0.06);
   }
-  .card-2 {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
-  }
+
+  /* Buttons */
   .btn-primary {
-    background: var(--airbus-cyan);
-    color: var(--airbus-blue);
-    font-weight: 700;
-    font-size: 0.8rem;
-    padding: 0.45rem 1rem;
-    border-radius: 6px;
+    background: var(--ab);
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 2px;
     border: none;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: background 0.2s;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.01em;
   }
-  .btn-primary:hover { opacity: 0.88; }
-  .btn-ghost {
+  .btn-primary:hover { background: var(--ab-mid); }
+
+  .btn-secondary {
     background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    padding: 0.45rem 1rem;
-    border-radius: 6px;
+    color: var(--ab);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 7px 17px;
+    border-radius: 2px;
+    border: 1.5px solid var(--ab);
     cursor: pointer;
     transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
   }
-  .btn-ghost:hover { border-color: var(--airbus-cyan); color: var(--airbus-cyan); }
+  .btn-secondary:hover { background: var(--ab); color: #fff; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ab-grey-3);
+    font-size: 13px;
+    padding: 7px 16px;
+    border-radius: 2px;
+    border: 1px solid var(--ab-grey);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-ghost:hover { border-color: var(--ab-light); color: var(--ab-light); }
+
+  /* Input */
   .input {
-    background: var(--airbus-blue);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.45rem 0.75rem;
-    font-size: 0.8rem;
-    color: var(--text-primary);
+    background: #fff;
+    border: 1.5px solid var(--ab-grey);
+    border-radius: 2px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--ab-text);
     width: 100%;
     outline: none;
+    font-family: 'Inter', sans-serif;
     transition: border-color 0.2s;
-    font-family: 'DM Sans', sans-serif;
   }
-  .input::placeholder { color: var(--text-dim); }
-  .input:focus { border-color: var(--airbus-cyan); }
+  .input:focus { border-color: var(--ab-light); }
+  .input::placeholder { color: var(--ab-grey-2); }
 
-  /* severity tags */
-  .tag-critical { font-size:10px; padding:2px 8px; border-radius:99px; font-family:'JetBrains Mono',monospace; background:rgba(255,61,90,0.12); color:#ff3d5a; border:1px solid rgba(255,61,90,0.3); }
-  .tag-high     { font-size:10px; padding:2px 8px; border-radius:99px; font-family:'JetBrains Mono',monospace; background:rgba(255,170,0,0.12); color:#ffaa00; border:1px solid rgba(255,170,0,0.3); }
-  .tag-medium   { font-size:10px; padding:2px 8px; border-radius:99px; font-family:'JetBrains Mono',monospace; background:rgba(255,170,0,0.08); color:#ffd060; border:1px solid rgba(255,170,0,0.2); }
-  .tag-low      { font-size:10px; padding:2px 8px; border-radius:99px; font-family:'JetBrains Mono',monospace; background:rgba(0,214,143,0.1); color:#00d68f; border:1px solid rgba(0,214,143,0.25); }
-  .tag-info     { font-size:10px; padding:2px 8px; border-radius:99px; font-family:'JetBrains Mono',monospace; background:rgba(0,160,220,0.12); color:#00a0dc; border:1px solid rgba(0,160,220,0.3); }
-  .tag-medium-r { font-size:10px; padding:2px 8px; border-radius:99px; font-family:'JetBrains Mono',monospace; background:rgba(255,170,0,0.12); color:#ffaa00; border:1px solid rgba(255,170,0,0.3); }
+  /* Severity tags */
+  .tag-critical { display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 8px;border-radius:2px;background:#fde8ec;color:#e4002b;border:1px solid #f5b8c4; }
+  .tag-high     { display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 8px;border-radius:2px;background:#fff0ea;color:#fe5000;border:1px solid #ffc4aa; }
+  .tag-medium   { display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 8px;border-radius:2px;background:#fffbe6;color:#b38600;border:1px solid #f0d060; }
+  .tag-low      { display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 8px;border-radius:2px;background:#e6f7ee;color:#009f4d;border:1px solid #8dd4b0; }
+  .tag-info     { display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 8px;border-radius:2px;background:#e8f2fa;color:#0077c8;border:1px solid #a8cde8; }
+  .tag-neutral  { display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 8px;border-radius:2px;background:#f0f3f6;color:#6b7c8a;border:1px solid #d0d8e0; }
+
+  /* Section heading — Airbus style with left border */
+  .section-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ab);
+    padding-left: 12px;
+    border-left: 3px solid var(--ab-light);
+    margin-bottom: 16px;
+  }
+
+  /* Page title */
+  .page-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ab);
+    letter-spacing: -0.02em;
+  }
+
+  /* Table styles */
+  .ab-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .ab-table thead tr { border-bottom: 2px solid var(--ab); }
+  .ab-table thead th { padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ab); }
+  .ab-table tbody tr { border-bottom: 1px solid var(--ab-grey); transition: background 0.15s; }
+  .ab-table tbody tr:hover { background: #f0f5fb; }
+  .ab-table tbody td { padding: 11px 12px; color: var(--ab-text); }
 }
 
 @keyframes fadeUp {
-  from { opacity:0; transform:translateY(10px); }
-  to   { opacity:1; transform:translateY(0); }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .fade-up { animation: fadeUp 0.3s ease forwards; }
 
-/* ReactFlow */
-.react-flow__background { background: #00152e !important; }
-.react-flow__controls { background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; }
-.react-flow__controls-button { background: var(--surface) !important; border-color: var(--border) !important; color: var(--text-secondary) !important; }
-.react-flow__minimap { background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; }
+/* ReactFlow — white background, Airbus style */
+.react-flow__background { background: #f8fafc !important; }
+.react-flow__controls { background: #fff !important; border: 1px solid var(--ab-grey) !important; border-radius: 3px !important; box-shadow: 0 2px 8px rgba(0,32,91,0.1) !important; }
+.react-flow__controls-button { background: #fff !important; border-color: var(--ab-grey) !important; color: var(--ab) !important; }
+.react-flow__controls-button:hover { background: #f0f5fb !important; }
+.react-flow__minimap { background: #fff !important; border: 1px solid var(--ab-grey) !important; border-radius: 3px !important; }

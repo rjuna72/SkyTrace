@@ -1,72 +1,70 @@
 import { Link } from 'react-router-dom';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import { AlertTriangle, Plane, Package, Users, FileCode2, ArrowRight, TrendingUp } from 'lucide-react';
+import { AlertTriangle, Plane, Package, TrendingUp, ArrowRight, FileCode2 } from 'lucide-react';
 import { FLEET_STATS, RISK_BY_SUBSYSTEM, RECENT_ALERTS, AIRCRAFT, VULNERABILITIES } from '../data/mockData';
 
-const SEV = { critical:'#ff2d55', high:'#ff6b35', medium:'#f5a800', low:'#00e5a0' };
+const RISK_COLORS = { high:'#e4002b', medium:'#fe5000', low:'#009f4d' };
 
-function StatCard({ label, value, sub, color, icon: Icon }) {
+function StatCard({ label, value, sub, color, icon: Icon, linkTo }) {
   return (
-    <div className="card flex flex-col gap-2">
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] text-muted font-mono uppercase tracking-widest">{label}</span>
-        {Icon && <Icon size={13} className="text-muted" />}
+    <div className="card" style={{ borderTop: `3px solid ${color || '#0077c8'}` }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom: 12 }}>
+        <span style={{ fontSize: 11, fontWeight: 600, color: '#6b7c8a', textTransform:'uppercase', letterSpacing:'0.08em' }}>{label}</span>
+        {Icon && <Icon size={16} color={color || '#0077c8'} />}
       </div>
-      <div className="flex items-end gap-2">
-        <span className="text-3xl font-bold leading-none" style={{ color: color || '#e8edf8', fontFamily:'Syne,sans-serif' }}>{value}</span>
-        {sub && <span className="text-xs text-muted font-mono mb-0.5">{sub}</span>}
+      <div style={{ display:'flex', alignItems:'baseline', gap: 6 }}>
+        <span style={{ fontSize: 28, fontWeight: 800, color: color || '#00205b', fontFamily:'Inter Tight, sans-serif', lineHeight: 1 }}>{value}</span>
+        {sub && <span style={{ fontSize: 12, color: '#6b7c8a', fontWeight: 500 }}>{sub}</span>}
       </div>
     </div>
   );
 }
 
-function RiskDot({ s }) {
-  return <span className="w-2 h-2 rounded-full inline-block" style={{ background: SEV[s] || '#4a5878' }} />;
-}
-
 export default function Dashboard() {
   return (
-    <div className="h-full overflow-y-auto p-6 space-y-5">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 text-[10px] font-mono text-muted mb-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" style={{animation:'pulse 2s infinite'}} />
-          Live · {new Date().toLocaleDateString('en-GB', { dateStyle: 'long' })}
+    <div style={{ height:'100%', overflowY:'auto', padding: 28, background:'#f4f6f9' }}>
+
+      {/* Page header */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display:'flex', alignItems:'center', gap: 8, marginBottom: 6 }}>
+          <div style={{ height: 3, width: 32, background:'#0077c8', borderRadius: 2 }} />
+          <span style={{ fontSize: 11, fontWeight:600, color:'#0077c8', textTransform:'uppercase', letterSpacing:'0.1em' }}>Executive Overview</span>
         </div>
-        <h1 style={{fontFamily:'Syne,sans-serif'}} className="text-2xl font-bold text-text-primary">Home / Executive Dashboard</h1>
-        <p className="text-text-secondary text-xs mt-0.5">High-level overview of cyber risk across the fleet</p>
+        <h1 className="page-title">Fleet Cyber Risk Dashboard</h1>
+        <p style={{ fontSize: 13, color:'#6b7c8a', marginTop: 4 }}>Real-time software supply chain visibility across your fleet</p>
       </div>
 
-      {/* Top stats */}
-      <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
-        <StatCard label="Aircraft in Fleet"         value={FLEET_STATS.totalAircraft.toLocaleString()} icon={Plane} />
-        <StatCard label="Critical Vulnerabilities"  value={FLEET_STATS.criticalVulns} color="#ff2d55" icon={AlertTriangle} />
-        <StatCard label="Affected Configurations"   value={FLEET_STATS.affectedConfigs} color="#ff6b35" sub="High Risk" />
-        <StatCard label="Suppliers Missing SBOMs"   value={FLEET_STATS.missingSuppliers} color="#f5a800" sub="Action Required" />
-        <StatCard label="Avg. Response Time"        value={FLEET_STATS.avgResponseDays} sub="days" icon={TrendingUp} />
-        <StatCard label="Total SBOMs"               value={FLEET_STATS.sboms.toLocaleString()} icon={FileCode2} />
+      {/* KPI row */}
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap: 16, marginBottom: 24 }}>
+        <StatCard label="Aircraft in Fleet"        value={FLEET_STATS.totalAircraft.toLocaleString()} icon={Plane} color="#00205b" />
+        <StatCard label="Critical Vulnerabilities" value={FLEET_STATS.criticalVulns}  color="#e4002b" icon={AlertTriangle} />
+        <StatCard label="Affected Configs"         value={FLEET_STATS.affectedConfigs} color="#fe5000" sub="High Risk" />
+        <StatCard label="Suppliers Missing SBOMs"  value={FLEET_STATS.missingSuppliers} color="#fe5000" sub="Action Req." />
+        <StatCard label="Avg. Response Time"       value={FLEET_STATS.avgResponseDays} sub="days" color="#0077c8" icon={TrendingUp} />
+        <StatCard label="Total SBOMs"              value={FLEET_STATS.sboms.toLocaleString()} icon={FileCode2} color="#4298b5" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap: 20, marginBottom: 20 }}>
+
         {/* Risk donut */}
         <div className="card">
-          <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-text-primary mb-4">Risk by Subsystem</h2>
-          <ResponsiveContainer width="100%" height={180}>
+          <div className="section-title">Risk by Subsystem</div>
+          <ResponsiveContainer width="100%" height={160}>
             <PieChart>
-              <Pie data={RISK_BY_SUBSYSTEM} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" strokeWidth={0}>
+              <Pie data={RISK_BY_SUBSYSTEM} cx="50%" cy="50%" innerRadius={45} outerRadius={72} dataKey="value" strokeWidth={0}>
                 {RISK_BY_SUBSYSTEM.map((e, i) => <Cell key={i} fill={e.color} />)}
               </Pie>
-              <Tooltip formatter={(v, n) => [`${v}%`, n]} contentStyle={{ background:'#0e1521', border:'1px solid #1a2438', borderRadius:8, fontSize:11 }} />
+              <Tooltip formatter={(v,n) => [`${v}%`, n]} contentStyle={{ background:'#fff', border:'1px solid #e8ecf0', borderRadius:3, fontSize:12 }} />
             </PieChart>
           </ResponsiveContainer>
-          <div className="space-y-2 mt-2">
+          <div style={{ display:'flex', flexDirection:'column', gap: 8, marginTop: 8 }}>
             {RISK_BY_SUBSYSTEM.map(r => (
-              <div key={r.name} className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ background: r.color }} />
-                  <span className="text-text-secondary">{r.name}</span>
+              <div key={r.name} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', fontSize:13 }}>
+                <div style={{ display:'flex', alignItems:'center', gap: 8 }}>
+                  <span style={{ width:10, height:10, borderRadius:2, background:r.color, display:'inline-block' }} />
+                  <span style={{ color:'#1a2332' }}>{r.name}</span>
                 </div>
-                <span className="font-mono" style={{ color: r.color }}>{r.value}%</span>
+                <span style={{ fontWeight:700, color:r.color }}>{r.value}%</span>
               </div>
             ))}
           </div>
@@ -74,17 +72,18 @@ export default function Dashboard() {
 
         {/* Top Risks */}
         <div className="card">
-          <div className="flex items-center justify-between mb-4">
-            <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-text-primary">Top Risks</h2>
-            <Link to="/query" className="text-[10px] text-accent hover:underline flex items-center gap-1">View all <ArrowRight size={9} /></Link>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 16 }}>
+            <div className="section-title" style={{ marginBottom:0 }}>Top Risks</div>
+            <Link to="/query" style={{ fontSize:12, color:'#0077c8', textDecoration:'none', display:'flex', alignItems:'center', gap:4, fontWeight:500 }}>
+              View all <ArrowRight size={12} />
+            </Link>
           </div>
-          <div className="space-y-2">
-            {VULNERABILITIES.slice(0, 5).map(v => (
-              <div key={v.id} className="flex items-center gap-3 px-3 py-2.5 bg-bg border border-border rounded-lg hover:border-accent/30 transition-colors">
-                <RiskDot s={v.severity} />
-                <div className="flex-1 min-w-0">
-                  <div className="font-mono text-xs text-text-primary">{v.id}</div>
-                  <div className="text-[10px] text-muted truncate">{v.component}</div>
+          <div style={{ display:'flex', flexDirection:'column', gap: 8 }}>
+            {VULNERABILITIES.slice(0,5).map(v => (
+              <div key={v.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'#f8fafc', border:'1px solid #e8ecf0', borderRadius:3, borderLeft:`3px solid ${RISK_COLORS[v.severity]||'#0077c8'}` }}>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontWeight:600, fontSize:12, color:'#00205b', fontFamily:'Inter Tight, sans-serif' }}>{v.id}</div>
+                  <div style={{ fontSize:11, color:'#6b7c8a', marginTop:2 }}>{v.component} · CVSS {v.cvss}</div>
                 </div>
                 <span className={`tag-${v.severity}`}>{v.severity}</span>
               </div>
@@ -92,77 +91,53 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Recent Alerts + Fleet */}
-        <div className="space-y-4">
-          <div className="card">
-            <div className="flex items-center justify-between mb-3">
-              <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-text-primary">Recent Alerts</h2>
-            </div>
-            <div className="space-y-2">
-              {RECENT_ALERTS.map((a, i) => (
-                <div key={i} className="flex items-start gap-2.5 py-2 border-b border-border/50 last:border-0">
-                  <RiskDot s={a.severity} />
-                  <div className="flex-1 min-w-0">
-                    <div className="font-mono text-[11px] text-accent">{a.id}</div>
-                    <div className="text-[10px] text-muted truncate">{a.component} · {a.system}</div>
-                    <div className="text-[10px] text-muted/60">{a.date}</div>
-                  </div>
+        {/* Recent Alerts */}
+        <div className="card">
+          <div className="section-title">Recent Alerts</div>
+          <div style={{ display:'flex', flexDirection:'column' }}>
+            {RECENT_ALERTS.map((a,i) => (
+              <div key={i} style={{ padding:'12px 0', borderBottom:'1px solid #e8ecf0', display:'flex', gap:10, alignItems:'flex-start' }}>
+                <div style={{ width:8, height:8, borderRadius:'50%', background:RISK_COLORS[a.severity]||'#0077c8', marginTop:3, flexShrink:0 }} />
+                <div>
+                  <div style={{ fontWeight:600, fontSize:12, color:'#0077c8' }}>{a.id}</div>
+                  <div style={{ fontSize:12, color:'#1a2332', marginTop:1 }}>{a.component}</div>
+                  <div style={{ fontSize:11, color:'#6b7c8a', marginTop:1 }}>{a.system}</div>
+                  <div style={{ fontSize:11, color:'#b0bec8', marginTop:1 }}>{a.date}</div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center justify-between mb-3">
-              <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-text-primary">Fleet Summary</h2>
-              <Link to="/fleet" className="text-[10px] text-accent hover:underline flex items-center gap-1">Full view <ArrowRight size={9} /></Link>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                ['Subsystems', FLEET_STATS.subsystems],
-                ['Suppliers', FLEET_STATS.suppliers],
-                ['SBOMs', FLEET_STATS.sboms],
-                ['Monitored', '24/7'],
-              ].map(([k, v]) => (
-                <div key={k} className="bg-bg border border-border rounded-lg p-2.5 text-center">
-                  <div style={{fontFamily:'Syne,sans-serif'}} className="font-bold text-lg text-text-primary">{v}</div>
-                  <div className="text-[10px] text-muted font-mono">{k}</div>
-                </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Fleet table */}
       <div className="card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-text-primary">Aircraft Overview</h2>
-          <Link to="/fleet" className="btn-ghost text-xs py-1.5 px-3">View fleet</Link>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 16 }}>
+          <div className="section-title" style={{ marginBottom:0 }}>Aircraft Overview</div>
+          <Link to="/fleet"><button className="btn-secondary" style={{ fontSize:12, padding:'6px 14px' }}>View Full Fleet</button></Link>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="text-left text-[10px] font-mono text-muted uppercase tracking-widest border-b border-border">
-                {['Aircraft','Config','Airline','Overall Risk','Affected Subsystems','Status'].map(h => (
-                  <th key={h} className="pb-2 pr-4 font-normal">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/50">
-              {AIRCRAFT.slice(0,6).map(a => (
-                <tr key={a.id} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-2.5 pr-4 font-mono text-accent">{a.tail}</td>
-                  <td className="py-2.5 pr-4 text-text-dim font-mono">{a.config}</td>
-                  <td className="py-2.5 pr-4 text-text-secondary">{a.airline}</td>
-                  <td className="py-2.5 pr-4"><span className={`tag-${a.overallRisk}`}>{a.overallRisk}</span></td>
-                  <td className="py-2.5 pr-4 font-mono text-text-secondary">{a.affectedSubsystems}</td>
-                  <td className="py-2.5"><span className={a.status==='active'?'tag-low':'tag-high'}>{a.status}</span></td>
-                </tr>
+        <table className="ab-table">
+          <thead>
+            <tr>
+              {['Tail Number','Type','Airline','Config','Overall Risk','Affected Subsystems','Status'].map(h => (
+                <th key={h}>{h}</th>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </tr>
+          </thead>
+          <tbody>
+            {AIRCRAFT.slice(0,6).map(a => (
+              <tr key={a.id}>
+                <td style={{ fontWeight:700, color:'#00205b', fontFamily:'Inter Tight, sans-serif' }}>{a.tail}</td>
+                <td style={{ color:'#6b7c8a' }}>{a.type}</td>
+                <td>{a.airline}</td>
+                <td style={{ color:'#6b7c8a' }}>{a.config}</td>
+                <td><span className={`tag-${a.overallRisk}`}>{a.overallRisk}</span></td>
+                <td style={{ fontWeight:600, color: a.overallRisk==='high'?'#e4002b':'#1a2332' }}>{a.affectedSubsystems}</td>
+                <td><span className={a.status==='active'?'tag-low':'tag-high'}>{a.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

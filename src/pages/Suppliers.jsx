@@ -7,7 +7,7 @@ function ScoreBar({ value }) {
   const color = value >= 80 ? '#00e5a0' : value >= 55 ? '#ff6b35' : '#ff2d55';
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 bg-bg border border-border rounded-full h-1.5 overflow-hidden">
+      <div className="flex-1 bg-ab-off border border-ab-grey rounded-full h-1.5 overflow-hidden">
         <div className="h-full rounded-full transition-all" style={{ width: `${value}%`, background: color }} />
       </div>
       <span className="font-mono text-xs w-8 text-right" style={{ color }}>{value}</span>
@@ -18,7 +18,7 @@ function ScoreBar({ value }) {
 function TrendIcon({ trend }) {
   if (trend === 'up')   return <TrendingUp   size={13} className="text-success" />;
   if (trend === 'down') return <TrendingDown  size={13} className="text-danger" />;
-  return <Minus size={13} className="text-muted" />;
+  return <Minus size={13} className="text-ab-grey2" />;
 }
 
 export default function SuppliersPage() {
@@ -29,8 +29,8 @@ export default function SuppliersPage() {
   return (
     <div className="h-full overflow-y-auto p-6 space-y-5">
       <div>
-        <h1 style={{fontFamily:'Syne,sans-serif'}} className="text-2xl font-bold text-text-primary">Supplier Compliance</h1>
-        <p className="text-text-secondary text-xs mt-0.5">Monitor supplier transparency and SBOM quality</p>
+        <h1 style={{fontFamily:'Syne,sans-serif'}} className="text-2xl font-bold text-ab">Supplier Compliance</h1>
+        <p className="text-ab-grey3 text-xs mt-0.5">Monitor supplier transparency and SBOM quality</p>
       </div>
 
       {/* Summary */}
@@ -43,7 +43,7 @@ export default function SuppliersPage() {
         ].map(([label, value, color, Icon]) => (
           <div key={label} className="card">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] text-muted font-mono uppercase tracking-widest">{label}</span>
+              <span className="text-[10px] text-ab-grey2 font-mono uppercase tracking-widest">{label}</span>
               <Icon size={13} style={{ color }} />
             </div>
             <div style={{fontFamily:'Syne,sans-serif', color}} className="font-bold text-2xl">{value}</div>
@@ -53,10 +53,10 @@ export default function SuppliersPage() {
 
       {/* Supplier table */}
       <div className="card">
-        <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-text-primary mb-4">Supplier Registry</h2>
+        <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-ab mb-4">Supplier Registry</h2>
         <table className="w-full text-xs">
           <thead>
-            <tr className="text-left text-[10px] font-mono text-muted uppercase tracking-widest border-b border-border">
+            <tr className="text-left text-[10px] font-mono text-ab-grey2 uppercase tracking-widest border-b border-ab-grey">
               {['Supplier','Tier','SBOM Completeness','Update Frequency','Avg. Response Time','Compliance Score','Trend'].map(h => (
                 <th key={h} className="pb-2 pr-4 font-normal">{h}</th>
               ))}
@@ -66,16 +66,16 @@ export default function SuppliersPage() {
             {SUPPLIERS.map(s => (
               <tr key={s.id} className="hover:bg-white/[0.02]">
                 <td className="py-3 pr-4">
-                  <div className="font-semibold text-text-primary">{s.name}</div>
-                  <div className="text-[10px] text-muted mt-0.5">{s.systems.slice(0,2).join(', ')}</div>
+                  <div className="font-semibold text-ab">{s.name}</div>
+                  <div className="text-[10px] text-ab-grey2 mt-0.5">{s.systems.slice(0,2).join(', ')}</div>
                 </td>
                 <td className="py-3 pr-4">
                   <span className={`font-mono text-[10px] px-2 py-0.5 rounded border ${
-                    s.tier==='Tier 1' ? 'text-accent border-accent/30 bg-accent/10' : 'text-muted border-border'
+                    s.tier==='Tier 1' ? 'text-ab-light border-accent/30 bg-accent/10' : 'text-ab-grey2 border-ab-grey'
                   }`}>{s.tier}</span>
                 </td>
                 <td className="py-3 pr-4 w-32"><ScoreBar value={s.compliance} /></td>
-                <td className="py-3 pr-4 text-text-secondary">{s.updateFreq}</td>
+                <td className="py-3 pr-4 text-ab-grey3">{s.updateFreq}</td>
                 <td className="py-3 pr-4">
                   <span className={s.avgResponse > 20 ? 'text-danger font-mono' : s.avgResponse > 12 ? 'text-warn font-mono' : 'text-success font-mono'}>
                     {s.avgResponse} days
@@ -91,14 +91,14 @@ export default function SuppliersPage() {
 
       {/* Compliance score factors */}
       <div className="card">
-        <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-text-primary mb-4">Compliance Score Factors</h2>
+        <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-ab mb-4">Compliance Score Factors</h2>
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-4">
           {FACTORS.map(f => (
-            <div key={f} className="bg-bg border border-border rounded-xl p-4 text-center hover:border-accent/30 transition-colors">
+            <div key={f} className="bg-ab-off border border-ab-grey rounded-xl p-4 text-center hover:border-accent/30 transition-colors">
               <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center mx-auto mb-2">
-                <CheckCircle size={16} className="text-accent" />
+                <CheckCircle size={16} className="text-ab-light" />
               </div>
-              <div className="text-[10px] text-text-secondary font-medium leading-tight">{f}</div>
+              <div className="text-[10px] text-ab-grey3 font-medium leading-tight">{f}</div>
             </div>
           ))}
         </div>

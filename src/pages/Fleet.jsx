@@ -1,144 +1,138 @@
 import { useState } from 'react';
-import { Plane, ChevronRight, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Plane, CheckCircle, AlertTriangle } from 'lucide-react';
 import { AIRCRAFT, SUBSYSTEMS } from '../data/mockData';
 
-const RISK_COLOR = { high:'text-danger', medium:'text-warn', low:'text-success' };
-const RISK_BG    = { high:'bg-danger/10 border-danger/20', medium:'bg-warn/10 border-warn/20', low:'bg-success/10 border-success/20' };
+const RISK_BORDER = { high:'#e4002b', medium:'#fe5000', low:'#009f4d' };
 
 export default function FleetPage() {
   const [selected, setSelected] = useState(AIRCRAFT[0].id);
-  const [compareMode, setCompareMode] = useState(false);
+  const [compare, setCompare] = useState(false);
   const [compareId, setCompareId] = useState(AIRCRAFT[1].id);
-
   const ac = AIRCRAFT.find(a => a.id === selected);
-  const acComp = AIRCRAFT.find(a => a.id === compareId);
-  const subs = SUBSYSTEMS.filter(s => s.aircraftId === selected);
-  const subComp = SUBSYSTEMS.filter(s => s.aircraftId === compareId);
+  const acB = AIRCRAFT.find(a => a.id === compareId);
+  const subs  = SUBSYSTEMS.filter(s => s.aircraftId === selected);
+  const subsB = SUBSYSTEMS.filter(s => s.aircraftId === compareId);
 
   return (
-    <div className="flex h-full overflow-hidden">
-      {/* Left: aircraft list */}
-      <div className="w-60 shrink-0 border-r border-border flex flex-col bg-surface">
-        <div className="px-4 py-4 border-b border-border">
-          <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-bold text-text-primary text-sm">Aircraft / Fleet View</h2>
-          <p className="text-[10px] text-muted mt-0.5 font-mono">See risk by aircraft and configuration</p>
+    <div style={{ display:'flex', height:'100%', overflow:'hidden', background:'#f4f6f9' }}>
+      {/* Left panel */}
+      <div style={{ width:240, flexShrink:0, borderRight:'1px solid #e8ecf0', background:'#fff', display:'flex', flexDirection:'column', overflow:'hidden' }}>
+        <div style={{ padding:'16px 20px', borderBottom:'2px solid #00205b' }}>
+          <div style={{ fontFamily:'Inter Tight, sans-serif', fontWeight:800, fontSize:14, color:'#00205b' }}>Fleet View</div>
+          <div style={{ fontSize:11, color:'#6b7c8a', marginTop:2 }}>Select aircraft to inspect</div>
         </div>
-        <div className="flex-1 overflow-y-auto">
+        <div style={{ flex:1, overflowY:'auto' }}>
           {AIRCRAFT.map(a => {
-            const isSelected = selected === a.id;
+            const active = selected === a.id;
             return (
-              <button key={a.id} onClick={() => setSelected(a.id)}
-                className={`w-full text-left px-4 py-3 border-b border-border/50 transition-all ${
-                  isSelected ? 'bg-accent/8 border-l-2 border-l-accent' : 'hover:bg-white/[0.03]'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className={`w-1.5 h-1.5 rounded-full ${a.status==='active'?'bg-success':'bg-warn'}`} />
-                    <span className={`font-mono font-bold text-sm ${isSelected?'text-accent':'text-text-primary'}`}>{a.tail}</span>
+              <button key={a.id} onClick={() => setSelected(a.id)} style={{
+                width:'100%', textAlign:'left', padding:'12px 20px',
+                borderBottom:'1px solid #e8ecf0', background: active ? '#f0f5fb' : 'transparent',
+                borderLeft: `3px solid ${active ? '#0077c8' : 'transparent'}`,
+                cursor:'pointer', transition:'all 0.15s',
+              }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ width:7, height:7, borderRadius:'50%', background: a.status==='active'?'#009f4d':'#fe5000', flexShrink:0 }} />
+                    <span style={{ fontWeight:700, fontSize:13, color: active?'#0077c8':'#00205b', fontFamily:'Inter Tight, sans-serif' }}>{a.tail}</span>
                   </div>
-                  <span className={`tag-${a.overallRisk} text-[9px]`}>{a.overallRisk}</span>
+                  <span className={`tag-${a.overallRisk}`}>{a.overallRisk}</span>
                 </div>
-                <div className="text-[10px] text-muted font-mono mt-1 pl-3.5">{a.type} · {a.config}</div>
-                <div className="text-[10px] text-muted/60 pl-3.5">{a.airline}</div>
+                <div style={{ fontSize:11, color:'#6b7c8a', marginTop:4, paddingLeft:15 }}>{a.type}</div>
+                <div style={{ fontSize:11, color:'#b0bec8', paddingLeft:15 }}>{a.airline} · {a.config}</div>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Right: detail */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-5 fade-up">
+      {/* Right detail */}
+      <div style={{ flex:1, overflowY:'auto', padding:28 }} className="fade-up">
         {ac && (
-          <>
+          <div style={{ maxWidth:900 }}>
             {/* Header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
-                  <Plane size={18} className="text-accent" />
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:24 }}>
+              <div>
+                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:4 }}>
+                  <Plane size={18} color="#0077c8" />
+                  <h1 className="page-title">{ac.tail}</h1>
+                  <span className={`tag-${ac.status==='active'?'low':'high'}`}>{ac.status}</span>
+                  <span className={`tag-${ac.overallRisk}`}>{ac.overallRisk} risk</span>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 style={{fontFamily:'Syne,sans-serif'}} className="text-xl font-bold text-text-primary">{ac.tail}</h1>
-                    <span className="text-sm text-muted font-mono">– {ac.config}</span>
-                  </div>
-                  <div className="text-xs text-muted">{ac.airline} · {ac.type} · MSN {ac.msn}</div>
-                </div>
+                <div style={{ fontSize:13, color:'#6b7c8a' }}>{ac.airline} · {ac.type} · {ac.config} · MSN {ac.msn}</div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className={`border rounded-xl px-4 py-2 ${RISK_BG[ac.overallRisk]}`}>
-                  <div className="text-[10px] text-muted font-mono mb-0.5">Overall Risk</div>
-                  <div className={`font-bold text-lg capitalize ${RISK_COLOR[ac.overallRisk]}`} style={{fontFamily:'Syne,sans-serif'}}>{ac.overallRisk}</div>
-                </div>
-                <div className="card py-2 px-4">
-                  <div className="text-[10px] text-muted font-mono mb-0.5">Affected Subsystems</div>
-                  <div className="font-bold text-lg text-text-primary" style={{fontFamily:'Syne,sans-serif'}}>{ac.affectedSubsystems}</div>
-                </div>
-                <button onClick={() => setCompareMode(!compareMode)}
-                  className={`btn-ghost text-xs ${compareMode?'border-accent text-accent':''}`}>
-                  {compareMode ? 'Exit Compare' : 'Compare Configs'}
+              <div style={{ display:'flex', gap:10 }}>
+                <button onClick={() => setCompare(!compare)} className={compare?'btn-primary':'btn-secondary'} style={{ fontSize:12 }}>
+                  {compare ? 'Exit Compare' : 'Compare Configs'}
                 </button>
               </div>
             </div>
 
             {/* Compare selector */}
-            {compareMode && (
-              <div className="card flex items-center gap-4">
-                <span className="text-xs text-muted font-mono">Compare with:</span>
-                <select value={compareId} onChange={e => setCompareId(e.target.value)} className="input w-56 text-xs">
-                  {AIRCRAFT.filter(a => a.id !== selected).map(a => (
-                    <option key={a.id} value={a.id}>{a.tail} ({a.config})</option>
-                  ))}
+            {compare && (
+              <div className="card" style={{ marginBottom:20, display:'flex', alignItems:'center', gap:12 }}>
+                <span style={{ fontSize:13, color:'#6b7c8a', fontWeight:500 }}>Comparing with:</span>
+                <select value={compareId} onChange={e => setCompareId(e.target.value)} className="input" style={{ width:220 }}>
+                  {AIRCRAFT.filter(a => a.id !== selected).map(a => <option key={a.id} value={a.id}>{a.tail} — {a.config}</option>)}
                 </select>
-                <span className="text-[10px] text-muted font-mono">Comparing {ac.tail} vs {acComp?.tail}</span>
+                <span style={{ fontSize:12, color:'#6b7c8a' }}>{ac.tail} vs {acB?.tail}</span>
               </div>
             )}
 
+            {/* Risk summary cards */}
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:24 }}>
+              {[
+                ['Overall Risk', <span className={`tag-${ac.overallRisk}`} style={{ fontSize:14 }}>{ac.overallRisk.toUpperCase()}</span>],
+                ['Affected Subsystems', <span style={{ fontSize:22, fontWeight:800, color: ac.overallRisk==='high'?'#e4002b':'#00205b', fontFamily:'Inter Tight, sans-serif' }}>{ac.affectedSubsystems}</span>],
+                ['Configuration', <span style={{ fontSize:16, fontWeight:700, color:'#00205b', fontFamily:'Inter Tight, sans-serif' }}>{ac.config}</span>],
+              ].map(([label, val]) => (
+                <div key={label} className="card" style={{ textAlign:'center' }}>
+                  <div style={{ fontSize:11, fontWeight:600, color:'#6b7c8a', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10 }}>{label}</div>
+                  {val}
+                </div>
+              ))}
+            </div>
+
             {/* Subsystems table */}
             <div className="card">
-              <h2 style={{fontFamily:'Syne,sans-serif'}} className="font-semibold text-sm text-text-primary mb-4">
-                Subsystems {compareMode && <span className="text-muted text-xs ml-2 font-mono">({ac.tail} vs {acComp?.tail})</span>}
-              </h2>
-              <table className="w-full text-xs">
+              <div className="section-title">Subsystems & Software</div>
+              <table className="ab-table">
                 <thead>
-                  <tr className="text-left text-[10px] font-mono text-muted uppercase tracking-widest border-b border-border">
-                    {['Subsystem','Supplier','Risk Level','SBOM Status','Vulnerabilities', ...(compareMode?['Compare Risk','Compare SBOMs']:['DAL Level'])].map(h => (
-                      <th key={h} className="pb-2 pr-4 font-normal">{h}</th>
+                  <tr>
+                    {['Subsystem','Supplier','Risk Level','SBOM Status','CVEs','DAL Level', ...(compare?[`${acB?.tail} Risk`, `${acB?.tail} Status`]:[])].map(h => (
+                      <th key={h}>{h}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/40">
-                  {subs.map((s, i) => {
-                    const sc = subComp[i];
+                <tbody>
+                  {subs.map((s,i) => {
+                    const sc = compare ? subsB[i] : null;
                     return (
-                      <tr key={s.id} className="hover:bg-white/[0.02]">
-                        <td className="py-2.5 pr-4 text-text-primary font-medium">{s.name}</td>
-                        <td className="py-2.5 pr-4 text-text-dim">{s.supplier}</td>
-                        <td className="py-2.5 pr-4"><span className={`tag-${s.riskLevel}`}>{s.riskLevel.charAt(0).toUpperCase()+s.riskLevel.slice(1)}</span></td>
-                        <td className="py-2.5 pr-4">
-                          <div className="flex items-center gap-1.5">
-                            {s.sbomStatus === 'Complete'
-                              ? <CheckCircle size={11} className="text-success" />
-                              : <AlertTriangle size={11} className="text-warn" />}
-                            <span className={s.sbomStatus==='Complete'?'text-success':'text-warn'}>{s.sbomStatus}</span>
+                      <tr key={s.id}>
+                        <td style={{ fontWeight:600, color:'#00205b' }}>{s.name}</td>
+                        <td style={{ color:'#6b7c8a' }}>{s.supplier}</td>
+                        <td><span className={`tag-${s.riskLevel}`}>{s.riskLevel}</span></td>
+                        <td>
+                          <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                            {s.sbomStatus==='Complete'
+                              ? <CheckCircle size={12} color="#009f4d" />
+                              : <AlertTriangle size={12} color="#fe5000" />}
+                            <span style={{ fontSize:12, color: s.sbomStatus==='Complete'?'#009f4d':'#fe5000', fontWeight:500 }}>{s.sbomStatus}</span>
                           </div>
                         </td>
-                        <td className="py-2.5 pr-4">
-                          <span className={s.vulnerabilities > 0 ? 'text-danger font-mono font-bold' : 'text-success font-mono'}>{s.vulnerabilities}</span>
+                        <td style={{ fontWeight:700, color: s.vulnerabilities>0?'#e4002b':'#009f4d' }}>{s.vulnerabilities}</td>
+                        <td>
+                          <span style={{ fontSize:11, fontWeight:600, padding:'2px 7px', borderRadius:2, border:'1px solid',
+                            color: s.dal==='DAL-A'?'#e4002b':s.dal==='DAL-B'?'#fe5000':'#6b7c8a',
+                            borderColor: s.dal==='DAL-A'?'#f5b8c4':s.dal==='DAL-B'?'#ffc4aa':'#e8ecf0',
+                            background: s.dal==='DAL-A'?'#fde8ec':s.dal==='DAL-B'?'#fff0ea':'#f4f6f9',
+                          }}>{s.dal}</span>
                         </td>
-                        {compareMode ? (
+                        {compare && sc && (
                           <>
-                            <td className="py-2.5 pr-4">{sc && <span className={`tag-${sc.riskLevel}`}>{sc.riskLevel}</span>}</td>
-                            <td className="py-2.5 pr-4">{sc && <span className={sc.sbomStatus==='Complete'?'text-success text-xs':'text-warn text-xs'}>{sc.sbomStatus}</span>}</td>
+                            <td><span className={`tag-${sc.riskLevel}`}>{sc.riskLevel}</span></td>
+                            <td><span style={{ fontSize:12, color: sc.sbomStatus==='Complete'?'#009f4d':'#fe5000', fontWeight:500 }}>{sc.sbomStatus}</span></td>
                           </>
-                        ) : (
-                          <td className="py-2.5 pr-4">
-                            <span className={`font-mono text-[10px] px-2 py-0.5 rounded border ${
-                              s.dal==='DAL-A'?'text-danger border-danger/30 bg-danger/10':
-                              s.dal==='DAL-B'?'text-warn border-warn/30 bg-warn/10':
-                              'text-text-dim border-border'
-                            }`}>{s.dal}</span>
-                          </td>
                         )}
                       </tr>
                     );
@@ -146,7 +140,7 @@ export default function FleetPage() {
                 </tbody>
               </table>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
